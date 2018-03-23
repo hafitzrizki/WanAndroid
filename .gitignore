@@ -13,6 +13,14 @@ bin/
 gen/
 out/
 
+.idea/
+/.idea
+test/
+androidTest/
+/test
+/androidTest
+gradle
+
 # Gradle files
 .gradle/
 build/
@@ -39,6 +47,8 @@ captures/
 .idea/gradle.xml
 .idea/dictionaries
 .idea/libraries
+
+
 
 # Keystore files
 *.jks
