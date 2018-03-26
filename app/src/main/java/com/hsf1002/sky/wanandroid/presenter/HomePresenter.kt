@@ -38,8 +38,8 @@ interface HomePresenter
 
     interface OnFriendListListener
     {
-        fun getFriendList(bookmarkResult:FriendListResponse?, commonResult:FriendListResponse, hotResult:HotKeyResponse)
-        fun getFriendListSuccess()
+        fun getFriendList()
+        fun getFriendListSuccess(bookmarkResult:FriendListResponse?, commonResult:FriendListResponse, hotResult:HotKeyResponse)
         fun getFriendListFailed(errorMsg: String)
     }
 

@@ -99,6 +99,7 @@ class HomeFragment:BaseFragment(), HomeFragmentView, CollectArticleView
             adapter = homeAdapter
         }
 
+        // PagerSnapHelper的展示效果和LineSnapHelper是一样的，只是PagerSnapHelper 限制一次只能滑动一页，不能快速滑动
         bannerRecyclerView.run {
             layoutManager = linearLayoutManager
             bannerPagerSnap.attachToRecyclerView(this)
@@ -121,8 +122,8 @@ class HomeFragment:BaseFragment(), HomeFragmentView, CollectArticleView
             setEmptyView(R.layout.fragment_home_empty)
         }
 
-//        homeFragmentPresenter.getBanner()
- //       homeFragmentPresenter.getHomeList()
+        homeFragmentPresenter.getBanner()
+        homeFragmentPresenter.getHomeList()
     }
 
     override fun onPause() {
@@ -149,43 +150,106 @@ class HomeFragment:BaseFragment(), HomeFragmentView, CollectArticleView
     }
 
     override fun cancelRequest() {
-        //homeFragmentPresenter
+        homeFragmentPresenter.cancelRequest()
     }
 
     override fun collectArticleSuccess(result: HomeListResponse, isAdd: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun getHomeListSuccess(result: HomeListResponse) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        activity.toast(
+                if (isAdd)
+                {
+                    getString(R.string.bookmark_success)
+                }
+                else
+                {
+                    getString(R.string.bookmark_cancel_success)
+                }
+        )
     }
 
     override fun collectArticleFailed(errorMsg: String?, isAdd: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        activity.toast(
+                if (isAdd)
+                {
+                    getString(R.string.bookmark_failed)
+                }
+                else
+                {
+                    getString(R.string.bookmark_cancel_failed)
+                }
+        )
+    }
+
+    override fun getHomeListSuccess(result: HomeListResponse) {
+        result.data.datas?.let {
+            homeAdapter.run {
+                val total = result.data.total
+
+                if (result.data.offset >= total || data.size >= total)
+                {
+                    loadMoreEnd()
+                    return@let
+                }
+
+                if (swipeRefreshLayout.isRefreshing)
+                {
+                    replaceData(it)
+                }
+                else
+                {
+                    addData(it)
+                }
+                loadMoreComplete()
+                setEnableLoadMore(true)
+            }
+        }
+        swipeRefreshLayout.isRefreshing = false
     }
 
     override fun getHomeListFailed(errorMsg: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        homeAdapter.setEnableLoadMore(false)
+        homeAdapter.loadMoreFail()
+        errorMsg?.let {
+            activity.toast(it)
+        }?:let {
+            activity.toast(getString(R.string.get_data_error))
+        }
+        swipeRefreshLayout.isRefreshing = false
     }
 
     override fun getHomeListZero() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        activity.toast(getString(R.string.get_data_zero))
+        swipeRefreshLayout.isRefreshing =false
     }
 
     override fun getHomeListSmall(result: HomeListResponse) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        result.data.datas?.let {
+            homeAdapter.run {
+                replaceData(it)
+                loadMoreComplete()
+                loadMoreEnd()
+                setEnableLoadMore(false)
+            }
+        }
+        swipeRefreshLayout.isRefreshing = false
     }
 
     override fun getBannerSuccess(result: BannerResponse) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        result.data?.let {
+            bannerAdapter.replaceData(it)
+            startSwitchJob()
+        }
     }
 
     override fun getBannerFailed(errorMsg: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        errorMsg?.let {
+            activity.toast(it)
+        }?:let {
+            activity.toast(getString(R.string.get_data_error))
+        }
     }
 
     override fun getBannerZero() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        activity.toast(getString(R.string.get_data_zero))
     }
 
     private val onRefreshListener = SwipeRefreshLayout.OnRefreshListener {
@@ -194,7 +258,11 @@ class HomeFragment:BaseFragment(), HomeFragmentView, CollectArticleView
 
     fun refreshData()
     {
-
+        swipeRefreshLayout.isRefreshing = true
+        homeAdapter.setEnableLoadMore(false)
+        cancelSwtichJob()
+        homeFragmentPresenter.getBanner()
+        homeFragmentPresenter.getHomeList()
     }
 
     private val onItemClickListener = BaseQuickAdapter.OnItemClickListener{ _, _, position ->

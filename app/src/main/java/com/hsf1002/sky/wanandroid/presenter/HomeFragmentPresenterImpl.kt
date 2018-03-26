@@ -2,6 +2,9 @@ package com.hsf1002.sky.wanandroid.presenter
 
 import com.hsf1002.sky.wanandroid.bean.BannerResponse
 import com.hsf1002.sky.wanandroid.bean.HomeListResponse
+import com.hsf1002.sky.wanandroid.model.CollectArticleModel
+import com.hsf1002.sky.wanandroid.model.HomeModel
+import com.hsf1002.sky.wanandroid.model.HomeModelImpl
 import com.hsf1002.sky.wanandroid.view.CollectArticleView
 import com.hsf1002.sky.wanandroid.view.HomeFragmentView
 
@@ -14,39 +17,83 @@ class HomeFragmentPresenterImpl(private val homeFragmentView: HomeFragmentView,
 ):HomePresenter.OnHomeListListener, HomePresenter.OnCollectArticleListener, HomePresenter.OnBannerListener
 {
 
+    private val homeModel:HomeModel = HomeModelImpl()
+    private val collectArticleModel:CollectArticleModel = HomeModelImpl()
+
     override fun getHomeList(page: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        homeModel.getHomeList(this, page)
     }
 
     override fun getHomeListSuccess(result: HomeListResponse) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (result.errorCode != 0) {
+            homeFragmentView.getHomeListFailed(result.errorMsg)
+            return
+        }
+
+        val total = result.data.total
+        if (total == 0) {
+            homeFragmentView.getHomeListZero()
+            return
+        } else if (total < result.data.size) {
+            homeFragmentView.getHomeListSmall(result)
+            return
+        }
+        else
+        {
+            homeFragmentView.getHomeListSuccess(result)
+        }
     }
 
     override fun getHomeListFailed(errorMsg: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        homeFragmentView.getHomeListFailed(errorMsg)
     }
 
     override fun collectArticle(id: Int, isAdd: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        collectArticleModel.collectArticle(this, id, isAdd)
     }
 
     override fun collectArticleSuccess(result: HomeListResponse, isAdd: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (result.errorCode != 0)
+        {
+            collectArticleView.collectArticleFailed(result.errorMsg, isAdd)
+        }
+        else
+        {
+            collectArticleView.collectArticleSuccess(result, isAdd)
+        }
     }
 
     override fun collectArticleFailed(errorMsg: String, isAdd: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        collectArticleView.collectArticleFailed(errorMsg, isAdd)
     }
 
     override fun getBanner() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        homeModel.getBanner(this)
     }
 
     override fun getBannerSuccess(result: BannerResponse) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (result.errorCode != 0)
+        {
+            homeFragmentView.getBannerFailed(result.errorMsg)
+            return
+        }
+
+        result.data?:let {
+            homeFragmentView.getBannerZero()
+            return
+        }
+
+        homeFragmentView.getBannerSuccess(result)
     }
 
     override fun getBannerFailed(errorMsg: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        homeFragmentView.getBannerFailed(errorMsg)
+    }
+
+    fun cancelRequest()
+    {
+        homeModel.cancelBannerRequest()
+        homeModel.cancelHomeListRequest()
+        collectArticleModel.cancelCollectRequest()
     }
 }
