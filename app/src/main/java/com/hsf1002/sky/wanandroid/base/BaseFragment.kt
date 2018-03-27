@@ -1,6 +1,6 @@
 package com.hsf1002.sky.wanandroid.base
 
-import android.app.Fragment
+import android.support.v4.app.Fragment
 
 /**
  * Created by hefeng on 18-3-24.

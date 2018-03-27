@@ -1,12 +1,12 @@
 package com.hsf1002.sky.wanandroid.ui.activity
 
-import android.app.FragmentTransaction
 import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.NavigationView
+import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.widget.AppCompatButton
@@ -167,7 +167,7 @@ class MainActivity : BaseActivity() {
             drawerLayout.closeDrawer(GravityCompat.START)
         }
 
-        fragmentManager.beginTransaction().apply {
+        fragmentManger.beginTransaction().apply {
             homeFragment?:let{
                 HomeFragment().let {
                     homeFragment = it
@@ -219,7 +219,6 @@ class MainActivity : BaseActivity() {
                     // nothing here need to handle
                 }
             }
-
         }.commit()
     }
 
