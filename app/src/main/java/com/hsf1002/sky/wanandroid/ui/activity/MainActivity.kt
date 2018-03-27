@@ -83,6 +83,7 @@ class MainActivity : BaseActivity() {
             else
             {
                 setText(username)
+                //text = username
             }
         }
 

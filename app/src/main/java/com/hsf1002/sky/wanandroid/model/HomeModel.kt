@@ -12,7 +12,7 @@ interface HomeModel
     fun cancelHomeListRequest()
 
     fun getTypeTreeList(onTypeTreeListListener: HomePresenter.OnTypeTreeListListener)
-    fun cancelTypeTreeList()
+    fun cancelTypeTreeRequest()
 
     fun loginWanAndroid(onLoginListener: HomePresenter.OnLoginListener, username:String, password:String)
     fun cancelLoginRequest()

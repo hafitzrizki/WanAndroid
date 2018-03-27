@@ -109,7 +109,7 @@ class HomeModelImpl:HomeModel, CollectArticleModel
 
     }
 
-    override fun cancelTypeTreeList() {
+    override fun cancelTypeTreeRequest() {
         typeTreeListAsync?.cancelByActive()
     }
 
