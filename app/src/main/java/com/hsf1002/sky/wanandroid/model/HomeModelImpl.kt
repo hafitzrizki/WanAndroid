@@ -159,7 +159,7 @@ class HomeModelImpl:HomeModel, CollectArticleModel
         }
     }
 
-    override fun cancelregisterRequest() {
+    override fun cancelRegisterRequest() {
         registerAsync?.cancelByActive()
     }
 

@@ -1,5 +1,6 @@
 package com.hsf1002.sky.wanandroid.ui.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
@@ -23,6 +24,7 @@ import com.hsf1002.sky.wanandroid.ui.fragment.CommonUserFragment
 import com.hsf1002.sky.wanandroid.ui.fragment.HomeFragment
 import com.hsf1002.sky.wanandroid.ui.fragment.TypeFragment
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.nav_header_main.*
 
 class MainActivity : BaseActivity() {
     private var lastTime:Long = 0
@@ -56,7 +58,8 @@ class MainActivity : BaseActivity() {
         //setContentView(R.layout.activity_main)
         /****************************** toolbar ***********************/
         main_toolbar.run {
-            setTitle(getString(R.string.app_name))
+            //setTitle(getString(R.string.app_name))
+            title = getString(R.string.app_name)
             setSupportActionBar(this)
         }
 
@@ -78,22 +81,25 @@ class MainActivity : BaseActivity() {
         tvUsername.run {
             if (!isLogin)
             {
-                setText(getString(R.string.not_login))
+                //setText(getString(R.string.not_login))
+                text = getString(R.string.not_login)
             }
             else
             {
-                setText(username)
-                //text = username
+                //setText(username)
+                text = username
             }
         }
 
         btnLogout.run {
             if (!isLogin)
             {
-                setText(getString(R.string.goto_login))
+                //setText(getString(R.string.goto_login))
+                text = getString(R.string.goto_login)
             }
             else{
-                setText(getString(R.string.logout))
+                //setText(getString(R.string.logout))
+                text = getString(R.string.logout)
             }
 
             setOnClickListener{     ///////////////// the left bracket must adhere the function /////////////////
@@ -158,6 +164,27 @@ class MainActivity : BaseActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode)
+        {
+            Constant.MAIN_REQUEST_CODE ->
+            {
+                if (resultCode == Activity.RESULT_OK)
+                {
+                    navigationViewUsername.text = data?.getStringExtra(Constant.CONTENT_TITLE_KEY)
+                    navigationViewLogout.text = getString(R.string.logout)
+                }
+                homeFragment?.refreshData()
+            }
+            Constant.MAIN_LIKE_REQUEST_CODE ->
+            {
+                homeFragment?.refreshData()
+            }
+        }
     }
 
     private fun setFragment(index:Int)

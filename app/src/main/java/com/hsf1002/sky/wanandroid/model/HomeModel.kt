@@ -18,7 +18,7 @@ interface HomeModel
     fun cancelLoginRequest()
 
     fun registerWanAndroid(onRegisterListener: HomePresenter.OnRegisterListener, username:String, password:String, repassword:String)
-    fun cancelregisterRequest()
+    fun cancelRegisterRequest()
 
     fun getFriendList(onFriendListListener: HomePresenter.OnFriendListListener)
     fun cancelFriendRequest()
