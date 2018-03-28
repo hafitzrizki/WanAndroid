@@ -1,6 +1,8 @@
 package com.hsf1002.sky.wanandroid.ui.activity
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.KeyEvent
@@ -14,6 +16,7 @@ import com.hsf1002.sky.wanandroid.bean.HomeListResponse
 import com.hsf1002.sky.wanandroid.constant.Constant
 import com.hsf1002.sky.wanandroid.getAgentWeb
 import com.hsf1002.sky.wanandroid.presenter.ContentPresenterImpl
+import com.hsf1002.sky.wanandroid.toast
 import com.hsf1002.sky.wanandroid.view.CollectArticleView
 import com.just.agentweb.AgentWeb
 import com.just.agentweb.ChromeClientCallbackManager
@@ -66,10 +69,63 @@ class ContentActivity:BaseActivity(), CollectArticleView
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_content, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId)
+        {
+            android.R.id.home ->
+            {
+                finish()
+                return true
+            }
+            R.id.menuShare ->
+            {
+                Intent().run {
+                    action = Intent.ACTION_SEND
+                    putExtra(
+                            Intent.EXTRA_TEXT, getString(R.string.share_article_url, getString(R.string.app_name), shareTitle, shareUrl)
+                    )
+                    type = Constant.CONTENT_SHARE_TYPE
+                    startActivity(Intent.createChooser(this, "Share"))
+                }
+                return true
+            }
+            R.id.menuLike ->
+            {
+                if (!isLogin)
+                {
+                    Intent(this, LoginActivity::class.java).run {
+                        startActivity(this)
+                    }
+                    toast(getString(R.string.login_please_login))
+                    return true
+                }
+
+                // collect outside article
+                if (shareID == 0)
+                {
+                    collectArticlePresenter.collectOutSideArticle(shareTitle, getString(R.string.outside_title), shareUrl, true)
+                }
+                else
+                {
+                    collectArticlePresenter.collectArticle(shareID, true)
+                }
+                return true
+            }
+            R.id.menuBrowser ->
+            {
+                Intent().run {
+                    action = "android.intent.action.VIEW"
+                    data = Uri.parse(shareUrl)
+                    startActivity(this)
+                }
+                return true
+            }
+        }
+
         return super.onOptionsItemSelected(item)
     }
 
@@ -89,17 +145,20 @@ class ContentActivity:BaseActivity(), CollectArticleView
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        return super.onKeyDown(keyCode, event)
+        return  if (agentWeb.handleKeyEvent(keyCode, event))   true
+            else {
+                finish()
+                super.onKeyDown(keyCode, event)
+            }
     }
 
     override fun collectArticleSuccess(result: HomeListResponse, isAdd: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        toast(if (isAdd) getString(R.string.bookmark_success) else getString(R.string.bookmark_cancel_success))
     }
 
     override fun collectArticleFailed(errorMsg: String?, isAdd: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        toast(if (isAdd) getString(R.string.bookmark_failed, errorMsg) else getString(R.string.bookmark_cancel_failed, errorMsg))
     }
-
 
     override fun cancelRequest() {
         collectArticlePresenter

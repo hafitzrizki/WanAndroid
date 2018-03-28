@@ -2,6 +2,9 @@ package com.hsf1002.sky.wanandroid.presenter
 
 import com.hsf1002.sky.wanandroid.bean.HomeListResponse
 import com.hsf1002.sky.wanandroid.model.CollectArticleModel
+import com.hsf1002.sky.wanandroid.model.CollectOutsideArticleModel
+import com.hsf1002.sky.wanandroid.model.CollectOutsideArticleModelImpl
+import com.hsf1002.sky.wanandroid.model.SearchModelImpl
 import com.hsf1002.sky.wanandroid.view.CollectArticleView
 
 /**
@@ -10,29 +13,50 @@ import com.hsf1002.sky.wanandroid.view.CollectArticleView
 class ContentPresenterImpl(private val collectArticleView: CollectArticleView)
     :HomePresenter.OnCollectArticleListener, HomePresenter.OnCollectOutsideArticleListener
 {
-    //private val collectArticleModel:CollectArticleModel =
+    private val collectArticleModel:CollectArticleModel = SearchModelImpl()
+    private val collectOutsideArticleModel:CollectOutsideArticleModel = CollectOutsideArticleModelImpl()
 
     override fun collectArticle(id: Int, isAdd: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        collectArticleModel.collectArticle(this, id, isAdd)
     }
 
     override fun collectArticleSuccess(result: HomeListResponse, isAdd: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (result.errorCode != 0)
+        {
+            collectArticleView.collectArticleFailed(result.errorMsg, isAdd)
+        }
+        else
+        {
+            collectArticleView.collectArticleSuccess(result, isAdd)
+        }
     }
 
     override fun collectArticleFailed(errorMsg: String, isAdd: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        collectArticleView.collectArticleFailed(errorMsg, isAdd)
     }
 
     override fun collectOutSideArticle(title: String, author: String, link: String, isAdd: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        collectOutsideArticleModel.collectOutsideArticle(this, title, author, link, isAdd)
     }
 
     override fun collectOutSideArticleSuccess(result: HomeListResponse, isAdd: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (result.errorCode != 0)
+        {
+            collectArticleView.collectArticleFailed(result.errorMsg, isAdd)
+        }
+        else
+        {
+            collectArticleView.collectArticleSuccess(result, isAdd)
+        }
     }
 
     override fun collectOutSideArticleFailed(errorMsg: String, isAdd: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        collectArticleView.collectArticleFailed(errorMsg, isAdd)
+    }
+
+    fun cancelRequest()
+    {
+        collectArticleModel.cancelCollectRequest()
+        collectOutsideArticleModel.cancelCollectOutsideRequest()
     }
 }
