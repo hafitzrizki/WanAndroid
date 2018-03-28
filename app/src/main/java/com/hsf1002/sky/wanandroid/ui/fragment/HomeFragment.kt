@@ -116,8 +116,8 @@ class HomeFragment:BaseFragment(), HomeFragmentView, CollectArticleView
         homeAdapter.run {
             bindToRecyclerView(recyclerView)
             setOnLoadMoreListener(onRequestLoadMoreListener, recyclerView)
-            setOnItemClickListener(onItemClickListener)
-            setOnItemChildClickListener(onItemChildClickListener)
+            setOnItemClickListener(this@HomeFragment.onItemClickListener)
+            setOnItemChildClickListener(this@HomeFragment.onItemChildClickListener)
             addHeaderView(bannerRecyclerView)
             setEmptyView(R.layout.fragment_home_empty)
         }
