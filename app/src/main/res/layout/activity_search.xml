@@ -28,12 +28,12 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
+        android:id="@+id/search_swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
+            android:id="@+id/search_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"

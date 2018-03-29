@@ -18,15 +18,22 @@ import kotlinx.coroutines.experimental.async
 
 class HomeModelImpl:HomeModel, CollectArticleModel
 {
+    // home list
     private var homeListAsync:Deferred<HomeListResponse> ? = null
+    // tree
     private var typeTreeListAsync:Deferred<TreeListResponse> ? = null
-    private var hotListAsync:Deferred<HotKeyResponse> ? = null
     private var logginAsync:Deferred<LoginResponse> ? = null
     private var registerAsync:Deferred<LoginResponse> ? = null
-    private var friendListAsync:Deferred<FriendListResponse> ? = null
     private var collectArticleAsync:Deferred<HomeListResponse> ? = null
+    // banner
     private var bannerAsync:Deferred<BannerResponse> ? = null
+
+    // my bookmark
     private var bookmarkListAsync:Deferred<FriendListResponse> ? = null
+    // everyone search
+    private var hotListAsync:Deferred<HotKeyResponse> ? = null
+    // common use website
+    private var friendListAsync:Deferred<FriendListResponse> ? = null
 
 
     override fun getHomeList(onHomeListListener: HomePresenter.OnHomeListListener, page: Int) {

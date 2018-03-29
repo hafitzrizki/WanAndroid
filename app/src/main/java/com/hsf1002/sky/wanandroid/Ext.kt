@@ -66,6 +66,8 @@ fun encodeCookie(cookies: List<String>): String {
     return sb.toString()
 }
 
+fun getRandomColor(): String = "#${Integer.toHexString((Math.random() * 16777215).toInt())}"
+
 fun String.getAgentWeb(
         activity: Activity, webContent: ViewGroup,
         layoutParams: ViewGroup.LayoutParams,

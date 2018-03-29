@@ -67,17 +67,17 @@ class SearchActivity:BaseActivity(), SearchListView, CollectArticleView
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
 
-        swipeRefreshLayout.run {
+        search_swipeRefreshLayout.run {
             setOnRefreshListener(this@SearchActivity.onRefreshListener)
         }
 
-        recyclerView.run {
+        search_recyclerView.run {
             layoutManager = LinearLayoutManager(this@SearchActivity)
             adapter = searchAdapter
         }
 
         searchAdapter.run {
-            bindToRecyclerView(recyclerView)
+            bindToRecyclerView(search_recyclerView)
 
             setOnLoadMoreListener({
                 val page = searchAdapter.data.size /20 + 1
@@ -88,7 +88,7 @@ class SearchActivity:BaseActivity(), SearchListView, CollectArticleView
                         searchPresenter.getSearchList(page, it)
                     }
 
-            }, recyclerView)
+            }, search_recyclerView)
 
             onItemClickListener = this@SearchActivity.onItemClickListener
             onItemChildClickListener = this@SearchActivity.onItemChildClickListener
@@ -145,7 +145,7 @@ class SearchActivity:BaseActivity(), SearchListView, CollectArticleView
                     return@let
                 }
 
-                if (swipeRefreshLayout.isRefreshing)
+                if (search_swipeRefreshLayout.isRefreshing)
                 {
                     replaceData(it)
                 }
@@ -157,12 +157,12 @@ class SearchActivity:BaseActivity(), SearchListView, CollectArticleView
                 setEnableLoadMore(true)
             }
         }
-        swipeRefreshLayout.isRefreshing = false
+        search_swipeRefreshLayout.isRefreshing = false
     }
 
     override fun getSearchListFailed(errorMsg: String?) {
         searchAdapter.setEnableLoadMore(false)
-        swipeRefreshLayout.isRefreshing = false
+        search_swipeRefreshLayout.isRefreshing = false
         searchAdapter.loadMoreFail()
 
         errorMsg?.let {
@@ -170,7 +170,7 @@ class SearchActivity:BaseActivity(), SearchListView, CollectArticleView
         }?:let {
             toast(getString(R.string.get_data_error))
         }
-        swipeRefreshLayout.isRefreshing = false
+        search_swipeRefreshLayout.isRefreshing = false
     }
 
     override fun getSearchListZero() {
@@ -183,7 +183,7 @@ class SearchActivity:BaseActivity(), SearchListView, CollectArticleView
             toast(getString(R.string.get_data_error))
         }
 
-        swipeRefreshLayout.isRefreshing = false
+        search_swipeRefreshLayout.isRefreshing = false
     }
 
     override fun getSearchListSmall(result: HomeListResponse) {
@@ -195,7 +195,7 @@ class SearchActivity:BaseActivity(), SearchListView, CollectArticleView
                 setEnableLoadMore(false)
             }
         }
-        swipeRefreshLayout.isRefreshing = false
+        search_swipeRefreshLayout.isRefreshing = false
     }
 
     override fun collectArticleSuccess(result: HomeListResponse, isAdd: Boolean) {
@@ -236,11 +236,11 @@ class SearchActivity:BaseActivity(), SearchListView, CollectArticleView
         override fun onQueryTextSubmit(query: String?): Boolean {
             query?.let {
                 searchKey = it
-                swipeRefreshLayout.isRefreshing = true
+                search_swipeRefreshLayout.isRefreshing = true
                 searchAdapter.setEnableLoadMore(false)
                 searchPresenter.getSearchList(k = it)
             }?:let {
-                swipeRefreshLayout.isRefreshing = false
+                search_swipeRefreshLayout.isRefreshing = false
                 toast(getString(R.string.search_not_empty))
             }
 
@@ -255,17 +255,17 @@ class SearchActivity:BaseActivity(), SearchListView, CollectArticleView
         if (!isSearch)
         {
             searchAdapter.setEnableLoadMore(false)
-            swipeRefreshLayout.isRefreshing = true
+            search_swipeRefreshLayout.isRefreshing = true
             searchPresenter.getLikeList()
             return@OnRefreshListener
         }
 
         searchKey?.let {
             searchAdapter.setEnableLoadMore(false)
-            swipeRefreshLayout.isRefreshing = true
+            search_swipeRefreshLayout.isRefreshing = true
             searchPresenter.getSearchList(k = it)
         }?:let {
-            swipeRefreshLayout.isRefreshing = false
+            search_swipeRefreshLayout.isRefreshing = false
             toast(getString(R.string.search_not_empty))
         }
     }

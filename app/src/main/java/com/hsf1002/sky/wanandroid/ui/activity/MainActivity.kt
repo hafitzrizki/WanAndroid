@@ -1,12 +1,11 @@
 package com.hsf1002.sky.wanandroid.ui.activity
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.NavigationView
+import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -14,7 +13,6 @@ import android.support.v7.widget.AppCompatButton
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
-import com.gyf.barlibrary.ImmersionBar
 import com.hsf1002.sky.wanandroid.R
 import com.hsf1002.sky.wanandroid.base.BaseActivity
 import com.hsf1002.sky.wanandroid.base.Preference
@@ -50,7 +48,7 @@ class MainActivity : BaseActivity() {
     }
 
     override fun cancelRequest() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,8 +111,9 @@ class MainActivity : BaseActivity() {
                 {
                     Preference.clear()
                     tvUsername.setText(getString(R.string.not_login))
-                    setText(getString(R.string.goto_login))
-                    //homeFragment?
+                    //setText(getString(R.string.goto_login))
+                    text = getString(R.string.goto_login)
+                    homeFragment?.refreshData()
                 }
             }
 
@@ -155,7 +154,7 @@ class MainActivity : BaseActivity() {
             {
                 if (currentIndex == R.id.menuHot)
                 {
-                    //commonUserFragment?
+                    commonUserFragment?.refreshData()
                 }
                 setFragment(R.id.menuHot)
                 currentIndex = R.id.menuHot
@@ -184,6 +183,54 @@ class MainActivity : BaseActivity() {
             {
                 homeFragment?.refreshData()
             }
+        }
+    }
+
+    override fun onAttachFragment(fragment: Fragment?) {
+        super.onAttachFragment(fragment)
+
+        when (fragment)
+        {
+            is HomeFragment ->
+            {
+                homeFragment?:let {
+                    homeFragment = fragment
+                }
+            }
+            is TypeFragment ->
+            {
+                typeFragment?:let {
+                    typeFragment = fragment
+                }
+            }
+            is CommonUserFragment ->
+            {
+                commonUserFragment?:let {
+                    commonUserFragment = fragment
+                }
+            }
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        if (drawerLayout.isDrawerOpen(GravityCompat.START))
+        {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            return
+        }
+
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastTime < 2000)
+        {
+            super.onBackPressed()
+            finish()
+        }
+        else
+        {
+            toast(getString(R.string.double_click_exit))
+            lastTime = currentTime
         }
     }
 
@@ -222,21 +269,24 @@ class MainActivity : BaseActivity() {
             {
                 R.id.navigation_home ->
                 {
-                    main_toolbar.setTitle(getString(R.string.app_name))
+                    //main_toolbar.setTitle(getString(R.string.app_name))
+                    main_toolbar.title = getString(R.string.app_name)
                     homeFragment?.let {
                         this.show(it)
                     }
                 }
                 R.id.navigation_type ->
                 {
-                    main_toolbar.setTitle(getString(R.string.title_dashboard))
+                    //main_toolbar.setTitle(getString(R.string.title_dashboard))
+                    main_toolbar.title = getString(R.string.title_dashboard)
                     typeFragment?.let {
                         this.show(it)
                     }
                 }
                 R.id.menuHot ->
                 {
-                    main_toolbar.setTitle(getString(R.string.hot_title))
+                    //main_toolbar.setTitle(getString(R.string.hot_title))
+                    main_toolbar.title = getString(R.string.hot_title)
                     commonUserFragment?.let {
                         this.show(it)
                     }
@@ -264,6 +314,17 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        if (isLogin && tvUsername.text.toString() != username)
+        {
+            tvUsername.text = username
+            btnLogout.text = getString(R.string.logout)
+            homeFragment?.refreshData()
+        }
+    }
+
     private val onNavigationItemSelectedListener =
             BottomNavigationView.OnNavigationItemSelectedListener { item ->
                 setFragment(item.itemId)
@@ -274,7 +335,7 @@ class MainActivity : BaseActivity() {
                     {
                         if (currentIndex == R.id.navigation_home)
                         {
-                            //homeFragment?
+                            homeFragment?.smoothScrollToPosition()
                         }
 
                         currentIndex = R.id.navigation_home
@@ -284,7 +345,7 @@ class MainActivity : BaseActivity() {
                     {
                         if (currentIndex == R.id.navigation_type)
                         {
-                            //typeFragment?
+                            typeFragment?.smoothScrollToPosition()
                         }
 
                         currentIndex = R.id.navigation_type
@@ -328,10 +389,8 @@ class MainActivity : BaseActivity() {
                     {
                         // nothing here need to handle
                     }
-
                 }
                 drawerLayout.closeDrawer(GravityCompat.START)
                 true
             }
-
 }

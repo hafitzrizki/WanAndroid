@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.HorizontalScrollView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.hsf1002.sky.wanandroid.R
 import com.hsf1002.sky.wanandroid.adapter.BannerAdapter
@@ -251,6 +250,8 @@ class HomeFragment:BaseFragment(), HomeFragmentView, CollectArticleView
     override fun getBannerZero() {
         activity.toast(getString(R.string.get_data_zero))
     }
+
+    fun smoothScrollToPosition() = recyclerView.scrollToPosition(0)
 
     private val onRefreshListener = SwipeRefreshLayout.OnRefreshListener {
         refreshData()
