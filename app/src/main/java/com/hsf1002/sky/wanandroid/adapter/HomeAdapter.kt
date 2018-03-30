@@ -5,7 +5,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.hsf1002.sky.wanandroid.R
 import com.hsf1002.sky.wanandroid.bean.Datas
-import com.hsf1002.sky.wanandroid.constant.Constant
 
 /**
  * Created by hefeng on 18-3-24.

@@ -213,7 +213,7 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
+        //super.onBackPressed()
 
         if (drawerLayout.isDrawerOpen(GravityCompat.START))
         {
@@ -299,18 +299,18 @@ class MainActivity : BaseActivity() {
         }.commit()
     }
 
-    private fun hideFragment(transation:FragmentTransaction)
+    private fun hideFragment(transaction:FragmentTransaction)
     {
         homeFragment?.let {
-            transation.hide(it)
+            transaction.hide(it)
         }
 
         typeFragment?.let {
-            transation.hide(it)
+            transaction.hide(it)
         }
 
         commonUserFragment?.let {
-            transation.hide(it)
+            transaction.hide(it)
         }
     }
 

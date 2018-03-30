@@ -51,7 +51,8 @@ class ContentActivity:BaseActivity(), CollectArticleView
         super.onCreate(savedInstanceState)
 
         content_toolbar.run {
-            setTitle(getString(R.string.loading))
+            //setTitle(getString(R.string.loading))
+            title = getString(R.string.loading)
             setSupportActionBar(this)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
@@ -164,7 +165,7 @@ class ContentActivity:BaseActivity(), CollectArticleView
         collectArticlePresenter
     }
 
-    private val receivedTitleCallback = ChromeClientCallbackManager.ReceivedTitleCallback { view, title ->
+    private val receivedTitleCallback = ChromeClientCallbackManager.ReceivedTitleCallback { _, title ->
         title?.let {
             content_toolbar.title = it
         }

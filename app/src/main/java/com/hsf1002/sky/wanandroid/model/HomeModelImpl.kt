@@ -174,7 +174,7 @@ class HomeModelImpl:HomeModel, CollectArticleModel
         var throwable:Throwable? = null
         var bookmarkResult:FriendListResponse? = null
         var hotResult:HotKeyResponse? = null
-        var commonREsult:FriendListResponse? = null
+        var commonResult:FriendListResponse? = null
 
         async(UI) {
             tryCatch ({
@@ -215,7 +215,7 @@ class HomeModelImpl:HomeModel, CollectArticleModel
 
                 val result = friendListAsync?.await()
                 result?.let {
-                    commonREsult   = it
+                    commonResult   = it
                 }
             }
 
@@ -228,11 +228,11 @@ class HomeModelImpl:HomeModel, CollectArticleModel
                 onFriendListListener.getFriendListFailed(Constant.RESULT_NULL)
             }
 
-            commonREsult?.let {
+            commonResult?.let {
                 onFriendListListener.getFriendListFailed(Constant.RESULT_NULL)
             }
 
-            onFriendListListener.getFriendListSuccess(bookmarkResult, commonREsult!!, hotResult!!)
+            onFriendListListener.getFriendListSuccess(bookmarkResult, commonResult!!, hotResult!!)
         }
 
     }

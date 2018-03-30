@@ -76,8 +76,10 @@ class TypeArticleFragment:BaseFragment(), TypeArticleFragmentView, CollectArticl
 
         typeArticleAdapter.run {
             setOnLoadMoreListener(onRequestLoadMoreListener, tabRecyclerView)
-            setOnItemClickListener(this@TypeArticleFragment.onItemClickListener)
-            setOnItemChildClickListener(this@TypeArticleFragment.onItemChildClickListener)
+            //setOnItemClickListener(this@TypeArticleFragment.onItemClickListener)
+            onItemClickListener = this@TypeArticleFragment.onItemClickListener
+            //setOnItemChildClickListener(this@TypeArticleFragment.onItemChildClickListener)
+            onItemChildClickListener = this@TypeArticleFragment.onItemChildClickListener
             setEmptyView(R.layout.fragment_home_empty)
         }
 
@@ -171,7 +173,7 @@ class TypeArticleFragment:BaseFragment(), TypeArticleFragmentView, CollectArticl
         typeArticlePresenter.getTypeArticleList(cid = cid)
     }
 
-    private val onItemClickListener = BaseQuickAdapter.OnItemClickListener { adapter, view, position ->
+    private val onItemClickListener = BaseQuickAdapter.OnItemClickListener { _, _, position ->
         if (datas.size != 0)
         {
             Intent(activity, ContentActivity::class.java).run {

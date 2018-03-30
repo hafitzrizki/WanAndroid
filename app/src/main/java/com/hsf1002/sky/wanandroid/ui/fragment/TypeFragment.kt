@@ -105,7 +105,7 @@ class TypeFragment: BaseFragment(), TypeFragmentView
         typeSwipeRefreshLayout.isRefreshing = false
     }
 
-    fun refreshData()
+    private fun refreshData()
     {
         typeSwipeRefreshLayout.isRefreshing = true
         typeFragmentPresenter.getTypeTreeList()
